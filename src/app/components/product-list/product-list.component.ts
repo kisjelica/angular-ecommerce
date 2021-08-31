@@ -12,22 +12,43 @@ export class ProductListComponent implements OnInit {
 
   products: Product[];
   currentCategoryId: number;
-  constructor(private productService:ProductService, private route:ActivatedRoute) { }
+  searchMode: boolean;
+
+  constructor(private productService: ProductService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(() => {
       this.listProducts();
-    } );
-    
+    });
+
   }
   listProducts() {
+    this.searchMode = this.route.snapshot.paramMap.has('keyword');
+
+    if(this.searchMode){
+      this.handleSearchProducts();
+    }else{
+      this.handleListProducts();
+    }
+
+  }
+  handleSearchProducts(){
+    const keyword=this.route.snapshot.paramMap.get('keyword');
+    //now search for the products using keyword
+    this.productService.searchProducts(keyword).subscribe(
+      data=>{
+        this.products=data;
+      }
+    )
+  }
+  handleListProducts() {
     //check if id parameter is available
     const hasCategoryId: boolean = this.route.snapshot.paramMap.has('id');
-    
-    if(hasCategoryId){
+
+    if (hasCategoryId) {
       this.currentCategoryId = +this.route.snapshot.paramMap.get('id');
       //+ is to convert from string to number
-    }else{
+    } else {
       this.currentCategoryId = 1;
       //default to 1
     }
@@ -38,5 +59,4 @@ export class ProductListComponent implements OnInit {
       }
     )
   }
-
 }

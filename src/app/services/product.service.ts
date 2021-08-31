@@ -9,6 +9,7 @@ import { ProductCategory } from '../common/product-category';
 })
 export class ProductService {
   
+  
 
   private baseUrl = "http://localhost:8080/api/products";
   constructor(private httpClient:HttpClient) { }
@@ -18,9 +19,7 @@ export class ProductService {
 
     const searchUrl = `${this.baseUrl}/search/findByCategoryId?id=${categoryId}`;
 
-    return this.httpClient.get<GetResponseProduct>(searchUrl).pipe(
-      map(response => response._embedded.products)
-    );
+    return this.getProducts(searchUrl);
   }
 
   getProductCategories():Observable<ProductCategory[]> {
@@ -29,7 +28,17 @@ export class ProductService {
       map(response => response._embedded.productCategory)
     );
   }
-  
+  searchProducts(keyword: string): Observable<Product[]> {
+    const searchUrl = `${this.baseUrl}/search/findByNameContaining?name=${keyword}`;
+
+    return this.getProducts(searchUrl);
+  }
+
+  private getProducts(searchUrl: string): Observable<Product[]> {
+    return this.httpClient.get<GetResponseProduct>(searchUrl).pipe(
+      map(response => response._embedded.products)
+    );
+  }
 }
 //unwraps the JSON from the Spring Data REST _embedded entry
 interface GetResponseProduct{
