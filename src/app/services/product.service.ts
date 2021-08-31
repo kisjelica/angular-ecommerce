@@ -10,6 +10,7 @@ import { ProductCategory } from '../common/product-category';
 export class ProductService {
   
   
+  
 
   private baseUrl = "http://localhost:8080/api/products";
   constructor(private httpClient:HttpClient) { }
@@ -32,6 +33,13 @@ export class ProductService {
     const searchUrl = `${this.baseUrl}/search/findByNameContaining?name=${keyword}`;
 
     return this.getProducts(searchUrl);
+  }
+
+  getProduct(productId: number):Observable<Product> {
+    //build url based on product id
+    const productUrl = `${this.baseUrl}/${productId}`;
+
+    return this.httpClient.get<Product>(productUrl);
   }
 
   private getProducts(searchUrl: string): Observable<Product[]> {
