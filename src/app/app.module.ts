@@ -19,11 +19,12 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { LoginComponent } from './components/login/login.component';
 import { LoginStatusComponent } from './components/login-status/login-status.component';
 
-import { OKTA_CONFIG, OktaAuthModule, OktaCallbackComponent } from '@okta/okta-angular';
+import { OKTA_CONFIG, OktaAuthModule, OktaCallbackComponent, OktaAuthGuard } from '@okta/okta-angular';
 import myAppConfig from './config/my-app-config';
+import { MembersPageComponent } from './components/members-page/members-page.component';
 
 const oktaConfig = Object.assign({
-  onAuthRequired: (injector) => {
+  onAuthRequired: (oktaAuth, injector) => {
     const router = injector.get(Router);
 
     router.navigate('/login');
@@ -32,7 +33,7 @@ const oktaConfig = Object.assign({
 
 const routes: Routes = [
   //first match wins, define from most specific to most generic
-
+  { path: 'members', component: MembersPageComponent, canActivate: [OktaAuthGuard] },
   { path: 'login/callback', component: OktaCallbackComponent },
   // normally it is needed to parse the response and store the OAuth+OIDC tokens, instead the OktaCallbackComponent does this
   { path: 'login', component: LoginComponent },
@@ -59,7 +60,8 @@ const routes: Routes = [
     CartDetailsComponent,
     CheckoutComponent,
     LoginComponent,
-    LoginStatusComponent
+    LoginStatusComponent,
+    MembersPageComponent
   ],
   imports: [
     RouterModule.forRoot(routes),
@@ -69,7 +71,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     OktaAuthModule
   ],
-  providers: [ProductService, {provide: OKTA_CONFIG,useValue: oktaConfig}],
+  providers: [ProductService, { provide: OKTA_CONFIG, useValue: oktaConfig }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
