@@ -5,7 +5,7 @@ export default {
         //issuer of tokens
         issuer:'https://dev-69443593.okta.com/oauth2/default',
         //send user here after login
-        redirectUri:'http://localhost:4200/login/callback',
+        redirectUri:'https://localhost:4200/login/callback',
         //scopes provide access to information about a user
         
         scopes: ['openid','profile','email']
